@@ -23,5 +23,7 @@ export default defineConfig({
     url: `http://localhost:${PORT}`,
     reuseExistingServer: true,
     timeout: 60_000,
+    // 배포 기본값은 CAPTCHA on(D57) — 스모크는 신청 흐름을 직접 누르므로 dev 덮어쓰기로 끈다
+    env: { CAPTCHA: 'off' },
   },
 })
