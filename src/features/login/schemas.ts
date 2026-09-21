@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { env } from '@/shared/config/env'
 
-const passwordField = env.VITE_API_ADAPTER === 'http' ? z.string().min(1) : z.string()
+const passwordField = env.API_ADAPTER === 'http' ? z.string().min(1) : z.string()
 
 export const LoginFormSchema = z.object({
   studentId: z.string().trim().min(1),

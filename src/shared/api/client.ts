@@ -96,6 +96,6 @@ export function readAccessToken(data: unknown): string | null {
 let sharedClient: AxiosInstance | null = null
 
 export function getApiClient(): AxiosInstance {
-  sharedClient ??= createApiClient(env.VITE_API_BASE_URL ?? '')
+  sharedClient ??= createApiClient(env.API_BASE_URL ?? '')
   return sharedClient
 }

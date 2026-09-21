@@ -4,5 +4,5 @@ import type { SukangApi } from '@/features/sukang/api/types'
 import { env } from '@/shared/config/env'
 
 export function getAdapter(): SukangApi {
-  return env.VITE_API_ADAPTER === 'http' ? httpApi : mockApi
+  return env.API_ADAPTER === 'http' ? httpApi : mockApi
 }

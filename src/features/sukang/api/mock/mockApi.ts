@@ -52,7 +52,7 @@ async function simulate<T>(fn: () => T): Promise<T> {
 }
 
 function assertSessionAlive(): void {
-  if (env.VITE_MOCK_FAIL === 'session') throw new SukangError('SESSION_EXPIRED')
+  if (env.MOCK_FAIL === 'session') throw new SukangError('SESSION_EXPIRED')
 }
 
 function findCourse(courseId: string): Course {

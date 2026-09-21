@@ -13,7 +13,7 @@ interface PendingChallenge {
 }
 
 export function useCaptchaGate(): { guard: (run: () => void) => void; modal: ReactNode } {
-  const enabled = env.VITE_CAPTCHA === 'on'
+  const enabled = env.CAPTCHA === 'on'
   const fails = useSessionStore((s) => s.captchaFails)
   const recordCaptchaFail = useSessionStore((s) => s.recordCaptchaFail)
   const logout = useSessionStore((s) => s.logout)
