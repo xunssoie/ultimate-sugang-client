@@ -439,3 +439,11 @@
   `무역학부`(주간)는 원본 드롭다운에 없다 — 제외가 맞다.
 - 🙋🏻 **미확인**: ① 원본에서 학부 선택 시 하위 전공 포함 여부(D56-1) ② 서버 정렬이 원본 정렬과 같은지 ③ 실서버 통합 검증(D49).
 - 근거: 서버 2차 회신 2026-09-07 · 인테이크 명세 §4.2·§4.3·§5.2·§9.2·§10.1 · 시드 §6 재확인.
+
+## D57 — `VITE_*` 환경변수 폐지 · 배포값은 코드 소유 · 배포 = mock + CAPTCHA on (2026-09-21)
+- 보안 정책상 `VITE_` 접두사 환경변수를 쓸 수 없다(값이 공개 번들에 박히는 경로). `envPrefix` 로 이름만 바꾸는 우회는 **하지 않는다** — 노출은 같고 검사만 피한다.
+- **배포값 = `src/shared/config/env.ts` 스키마 기본값**: `API_ADAPTER=mock` · `CAPTCHA=on`(D34 의 "기본 off" 를 배포에 한해 대체) · `MOCK_FAIL` 없음. **Vercel 환경변수 0개.**
+- 로컬 dev 서버(`vite serve`)에서만 `.env` 의 **접두사 없는 키**(`API_ADAPTER`·`API_BASE_URL`·`MOCK_FAIL`·`CAPTCHA`)로 덮어쓴다. `vite.config.ts` 가 Node 쪽에서 읽어 `__DEV_OVERRIDES__` 로 주입하고, 프로덕션 빌드는 읽지 않는다(빈 객체). 스모크는 `playwright.config.ts` `webServer.env` 로 `CAPTCHA=off`.
+- `vercel.json` SPA fallback rewrite(`/(.*)` → `/index.html`) — `/sukang` 새로고침·직접 진입 404 방지.
+- 🙋🏻 **서버 연동 시(추후)**: `API_BASE_URL` 을 번들에 넣지 않도록 **Vercel rewrite 프록시**(`/api/v1/:path*` → 서버)로 전환하고 코드는 같은 도메인 `/api/v1` 고정 — D55-8 의 `VITE_API_BASE_URL` 조항을 그때 대체한다. 지금은 mock 이라 미착수.
+- 근거: 사용자 결정 2026-09-21(보안 정책 · 배포 mock · CAPTCHA on).
