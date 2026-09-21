@@ -11,7 +11,7 @@
 <!-- PROJECT:BEGIN — harness-init 이 02_api_spec 에서 추출해 채운다. 값 창작 금지, 02 에 있는 사실만. -->
 ## 공통 응답 형태 (`02 §1`)
 - **⚠️ HTTP 계약 미제공(Q-1).** 명세는 "서버·API 별도 존재"(원§0)라고만 하고 엔드포인트·메서드·URL·envelope·상태코드를 정의하지 않는다. → **엔드포인트를 창작하지 않는다.** 데이터 접근은 `features/sukang/api.ts` → 어댑터(`mock` 기본, D1) 뒤로 격리. **D25: 계약은 프론트 mock 에서 도출 → 서버가 맞춘다. `http` 어댑터 착수 금지**(스텁만).
-- Base URL: 미제공 → env `VITE_API_BASE_URL`(`03 §8`, http 어댑터 선택 시에만 필수).
+- Base URL: 미제공 → dev 덮어쓰기 `API_BASE_URL`(http 어댑터 선택 시에만 필수). **`VITE_*` 환경변수 금지**(D57).
 - 페이지네이션: **없음** — 전건 반환·전건 렌더링(원§1).
 - 에러 표현: HTTP 표현 미제공. 프론트 내부 에러 종별 `SukangErrorCode` = `02 §4-3`(DUP_TIME·DUP_SUBJECT·CREDIT_EXCEEDED·CLASS_FULL·SESSION_EXPIRED·NOT_IN_PERIOD·TIMEOUT). 메시지는 카탈로그 원문 그대로(`한글\n 영문`, 오탈자 유지 D5), 채널은 `window.alert`/`confirm` 만.
 - 상태코드 관례: 미제공(Q-1).
@@ -26,7 +26,7 @@
 - 이수구분(`courseType`/`resolvedType`) = **enum 8종**(D28): 전공기초·전공심화·기초교양·핵심교양·심화교양·일반선택·교직·군사학. `Student.status`(관측 `유예`, D31)·학년은 문자열. 원어여부 = `Course.isEnglish` → `EN(원어)`(D27). 학점 상한 = `gpa` 기반 20/21/24(D26). `schedule` 은 원문 문자열, `nameEn` 은 괄호 없음(D26).
 
 ## 상태전이 (백엔드 검증, 프론트도 UI 차단) — `02 §4`
-- 신청 검증 순서(D41): (CAPTCHA — `VITE_CAPTCHA=on` 시 D34 게이트, 기본 off) → 시간표 중복 `DUP_TIME`(반교시 단위 비교) → 동일 과목명 `DUP_SUBJECT`(시간 미겹침에도 차단, 독립) → 학점 상한 `CREDIT_EXCEEDED` → 정원 `CLASS_FULL`(프론트는 `isClosed` 행에 `마감` 버튼으로 **사전 차단 — 핸들러 없음**).
+- 신청 검증 순서(D41): (CAPTCHA — D34 게이트, **배포 기본 on**·dev 덮어쓰기 `CAPTCHA=off` 가능, D57) → 시간표 중복 `DUP_TIME`(반교시 단위 비교) → 동일 과목명 `DUP_SUBJECT`(시간 미겹침에도 차단, 독립) → 학점 상한 `CREDIT_EXCEEDED` → 정원 `CLASS_FULL`(프론트는 `isClosed` 행에 `마감` 버튼으로 **사전 차단 — 핸들러 없음**).
 - 이수구분은 **파생값**: 조회 = `Course.courseType`(개설학과 기준), 신청내역 = `Enrollment.resolvedType`(학생 기준, 서버 산출). 프론트 재계산 금지 — 두 값을 각각 표시.
 - 신청 성공 → 신청내역만 재조회. **조회 목록은 갱신하지 않는다**(D4·D33, 취소도 동일). 취소 → confirm 후 신청내역 재조회.
 - 재수강 구분 신규 = 빈 값. 순번 1부터. 초기 신청내역 0건(D43). 출력 버튼 클릭 = alert `연습 사이트에서는 지원하지 않습니다.`(D23). 대기열 미구현(D24).
